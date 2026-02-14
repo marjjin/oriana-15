@@ -1,0 +1,47 @@
+.oriana-header {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 2rem;
+	background: linear-gradient(140deg, #fff8f5 0%, #fff2df 100%);
+	font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+.oriana-header__content {
+	text-align: center;
+	padding: 2.5rem 2rem;
+	border-radius: 1.5rem;
+	background: #ffffff;
+	box-shadow: 0 12px 30px rgba(241, 128, 99, 0.2);
+	border: 2px solid #f7d48b;
+	min-width:80%;
+	width: min(100%, 640px);
+    height: auto;
+}
+
+.oriana-header__badge {
+	display: inline-block;
+	padding: 0.35rem 0.8rem;
+	border-radius: 999px;
+	background: linear-gradient(135deg, #ff7f6a 0%, #f7c66f 100%);
+	color: #ffffff;
+	font-size: 0.9rem;
+	font-weight: 600;
+}
+
+.oriana-header__title {
+	margin: 0.9rem 0 0.2rem;
+	font-size: clamp(2.2rem, 8vw, 4.2rem);
+	line-height: 1.05;
+	background: linear-gradient(120deg, #ff7f6a 0%, #d4a436 55%, #ff9a7a 100%);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+	letter-spacing: 0.02em;
+}
+
+.oriana-header__subtitle {
+	margin: 0;
+	font-size: clamp(1rem, 2.8vw, 1.2rem);
+	color: #7f5b2f;
+}

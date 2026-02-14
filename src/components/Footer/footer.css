@@ -1,0 +1,51 @@
+.oriana-footer {
+	padding: 0.8rem 2rem 1.4rem;
+	background: linear-gradient(140deg, #fff8f5 0%, #fff2df 100%);
+	font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    width: 100%;
+}
+
+.oriana-footer__content {
+	max-width: 640px;
+	width: min(100%, 640px);
+	margin: 0 auto;
+	text-align: center;
+	padding-top: 0.65rem;
+	border-top: 1px solid rgba(212, 164, 54, 0.26);
+	opacity: 0.82;
+}
+
+.oriana-footer__line {
+	margin: 0;
+	font-size: 0.82rem;
+	color: #8b6242;
+	letter-spacing: 0.01em;
+}
+
+.oriana-footer__line--muted {
+	margin-top: 0.18rem;
+	font-size: 0.76rem;
+	color: #a78360;
+}
+
+.oriana-footer__social {
+	margin-top: 0.28rem;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.38rem;
+	font-size: 0.74rem;
+}
+
+.oriana-footer__link {
+	color: #9a7556;
+	text-decoration: none;
+	transition: color 0.2s ease;
+}
+
+.oriana-footer__link:hover {
+	color: #c17858;
+}
+
+.oriana-footer__dot {
+	color: #b99673;
+}
