@@ -7,7 +7,7 @@ import "./login.css";
 
 const SESSION_KEY = "oriana_current_user";
 
-function Login() {
+function Login({ onLogin }) {
   const [showRegister, setShowRegister] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -38,9 +38,13 @@ function Login() {
         return;
       }
 
-      localStorage.setItem(SESSION_KEY, JSON.stringify(user));
+      if (onLogin) {
+        onLogin(user);
+      } else {
+        localStorage.setItem(SESSION_KEY, JSON.stringify(user));
+      }
       setLoading(false);
-      navigate("/feed");
+      navigate("/feed", { replace: true });
     } catch {
       setError("Error al iniciar sesión.");
       setLoading(false);
@@ -107,9 +111,13 @@ function Login() {
         <Register
           onClose={() => setShowRegister(false)}
           onSuccess={(newUser) => {
-            localStorage.setItem(SESSION_KEY, JSON.stringify(newUser));
+            if (onLogin) {
+              onLogin(newUser);
+            } else {
+              localStorage.setItem(SESSION_KEY, JSON.stringify(newUser));
+            }
             setShowRegister(false);
-            navigate("/feed");
+            navigate("/feed", { replace: true });
           }}
         />
       )}

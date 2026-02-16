@@ -38,14 +38,14 @@ function formatDate(value) {
 	});
 }
 
-function Feed() {
+function Feed({ currentUser: currentUserProp, onLogout }) {
 	const navigate = useNavigate();
 	const [posts, setPosts] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [uploading, setUploading] = useState(false);
 	const [error, setError] = useState("");
 
-	const currentUser = useMemo(() => getSavedUser(), []);
+	const currentUser = useMemo(() => currentUserProp || getSavedUser(), [currentUserProp]);
 
 	const loadPosts = async () => {
 		setLoading(true);
@@ -163,8 +163,12 @@ function Feed() {
 	};
 
 	const handleLogout = () => {
-		localStorage.removeItem(SESSION_KEY);
-		navigate("/");
+		if (onLogout) {
+			onLogout();
+		} else {
+			localStorage.removeItem(SESSION_KEY);
+		}
+		navigate("/", { replace: true });
 	};
 
 	return (
