@@ -1,0 +1,369 @@
+body.oriana-upload-open {
+  overflow: hidden;
+  touch-action: none;
+}
+
+.oriana-upload__fab {
+  position: fixed;
+  right: 1.2rem;
+  bottom: 1.2rem;
+  width: 3.2rem;
+  height: 3.2rem;
+  border-radius: 999px;
+  border: none;
+  font-size: 1.35rem;
+  line-height: 1;
+  background: linear-gradient(135deg, #ff7f6a 0%, #d4a436 100%);
+  color: #ffffff;
+  box-shadow: 0 10px 22px rgba(197, 131, 76, 0.35);
+  cursor: pointer;
+  z-index: 30;
+}
+
+.oriana-upload__layer {
+  position: fixed;
+  inset: 0;
+  background: rgba(35, 20, 12, 0.36);
+  z-index: 28;
+}
+
+.oriana-upload {
+  position: fixed;
+  right: 1.2rem;
+  bottom: 5rem;
+  width: min(95vw, 520px);
+  display: grid;
+  gap: 0.75rem;
+  padding: 1.1rem;
+  border: 1.5px solid #f3debb;
+  border-radius: 1rem;
+  background: #fffdf9;
+  box-shadow: 0 14px 28px rgba(197, 131, 76, 0.2);
+  z-index: 29;
+  max-height: 84vh;
+  overflow-y: auto;
+}
+
+.oriana-upload__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.oriana-upload__title {
+  margin: 0;
+  font-size: 0.96rem;
+  color: #8a5838;
+}
+
+.oriana-upload__close {
+  border: 1px solid #efc37f;
+  background: #fff8ed;
+  color: #b6704e;
+  border-radius: 999px;
+  width: 1.9rem;
+  height: 1.9rem;
+  font-size: 0.92rem;
+  cursor: pointer;
+}
+
+.oriana-upload__hidden {
+  display: none;
+}
+
+.oriana-upload__actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.48rem;
+}
+
+.oriana-upload__pick {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.45rem;
+  width: 100%;
+  min-height: 2.45rem;
+  border: 1px solid #e8c790;
+  border-radius: 0.72rem;
+  padding: 0.46rem 0.62rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: #7a4a33;
+  background: linear-gradient(180deg, #ffffff 0%, #fff8ee 100%);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.85) inset;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.14s ease,
+    background 0.18s ease;
+  cursor: pointer;
+}
+
+.oriana-upload__pick .oriana-upload__icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 999px;
+  border: 1px solid #f0d9b1;
+  background: #fffdf9;
+  color: #b6704e;
+  flex-shrink: 0;
+}
+
+.oriana-upload__pick-label {
+  font-weight: 700;
+  font-size: 0.78rem;
+}
+
+.oriana-upload__pick:hover {
+  border-color: #dca266;
+  background: linear-gradient(180deg, #fffdf9 0%, #fff2de 100%);
+  box-shadow: 0 7px 14px rgba(197, 131, 76, 0.16);
+}
+
+.oriana-upload__pick:hover .oriana-upload__icon {
+  border-color: #e6b77b;
+  background: #fff6e8;
+}
+
+.oriana-upload__pick:focus-visible {
+  outline: none;
+  border-color: #d48d56;
+  box-shadow: 0 0 0 3px rgba(212, 141, 86, 0.2);
+}
+
+.oriana-upload__pick:active {
+  transform: translateY(1px) scale(0.995);
+}
+
+.oriana-upload__filename {
+  margin: 0;
+  font-size: 0.79rem;
+  color: #9b7759;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.oriana-upload__preview-wrap {
+  position: relative;
+  border: 1px solid #efcf95;
+  border-radius: 0.75rem;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 4 / 5;
+  width: 100%;
+  max-height: 44vh;
+  overflow: hidden;
+}
+
+.oriana-upload__remove {
+  position: absolute;
+  top: 0.45rem;
+  right: 0.45rem;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.45);
+  color: #ffffff;
+  font-size: 0.9rem;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.oriana-upload__preview {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.2s ease;
+}
+
+.oriana-upload__hint {
+  margin: 0;
+  font-size: 0.76rem;
+  color: #9b7759;
+}
+
+.oriana-upload__edit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #efc37f;
+  background: #fff8ed;
+  color: #b6704e;
+  border-radius: 999px;
+  width: 2.35rem;
+  height: 2.35rem;
+  padding: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.oriana-upload__edit--active {
+  border-color: #d48d56;
+  background: #fbe8d3;
+  color: #8f4e2f;
+}
+
+.oriana-upload__edit--filter {
+  width: 2.2rem;
+  height: 2.2rem;
+}
+
+.oriana-upload__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+}
+
+.oriana-upload__icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.oriana-upload__icon--tool {
+  width: 1.02rem;
+  height: 1.02rem;
+}
+
+.oriana-upload__icon--fab {
+  width: 1.3rem;
+  height: 1.3rem;
+}
+
+.oriana-upload__tools,
+.oriana-upload__filter-tools {
+  display: flex;
+  align-items: center;
+  gap: 0.48rem;
+  flex-wrap: wrap;
+}
+
+.oriana-upload__filter-tools {
+  margin-top: -0.15rem;
+}
+
+.oriana-upload__adjustments {
+  border: 1px solid #efcf95;
+  border-radius: 0.75rem;
+  background: #fffaf3;
+  padding: 0.6rem 0.68rem;
+  display: grid;
+  gap: 0.48rem;
+}
+
+.oriana-upload__adjust-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.6rem;
+  color: #8f5a4a;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.oriana-upload__adjustments input[type="range"] {
+  width: 100%;
+  accent-color: #d48d56;
+}
+
+.oriana-upload__reset-adjust {
+  justify-self: start;
+  border: 1px solid #efc37f;
+  background: #ffffff;
+  color: #a16345;
+  border-radius: 999px;
+  padding: 0.36rem 0.66rem;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.oriana-upload__reset-adjust:hover {
+  background: #fff7ea;
+}
+
+.oriana-upload__label {
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: #8f5a4a;
+}
+
+.oriana-upload__input {
+  border: 1px solid #edc78a;
+  border-radius: 0.65rem;
+  padding: 0.58rem 0.7rem;
+  font-size: 0.9rem;
+  color: #4d3550;
+  background: #ffffff;
+}
+
+.oriana-upload__input--description {
+  min-height: 6.5rem;
+  resize: vertical;
+  line-height: 1.35;
+  margin-top: 0.15rem;
+}
+
+.oriana-upload__counter {
+  margin: 0.1rem 0 0;
+  font-size: 0.75rem;
+  color: #9b7759;
+  text-align: right;
+}
+
+.oriana-upload__submit {
+  margin-top: 0.2rem;
+  border: none;
+  border-radius: 999px;
+  padding: 0.62rem 0.9rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(135deg, #ff7f6a 0%, #d4a436 100%);
+  cursor: pointer;
+}
+
+.oriana-upload__submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.oriana-upload__error {
+  margin: 0;
+  color: #c0332a;
+  background: #ffefed;
+  border: 1px solid #f7c4bc;
+  border-radius: 0.6rem;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.84rem;
+}
+
+@media (max-width: 480px) {
+  .oriana-upload {
+    left: 0.5rem;
+    right: 0.5rem;
+    bottom: 4.8rem;
+    width: auto;
+    max-height: 86vh;
+  }
+
+  .oriana-upload__actions {
+    grid-template-columns: 1fr;
+  }
+
+  .oriana-upload__tools,
+  .oriana-upload__filter-tools {
+    gap: 0.42rem;
+  }
+
+  .oriana-upload__preview-wrap {
+    max-height: 34vh;
+  }
+}

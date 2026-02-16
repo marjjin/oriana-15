@@ -5,6 +5,8 @@ import sha256 from "crypto-js/sha256";
 import Register from "./Register.jsx";
 import "./login.css";
 
+const SESSION_KEY = "oriana_current_user";
+
 function Login() {
   const [showRegister, setShowRegister] = useState(false);
   const [username, setUsername] = useState("");
@@ -35,9 +37,11 @@ function Login() {
         setLoading(false);
         return;
       }
+
+      localStorage.setItem(SESSION_KEY, JSON.stringify(user));
       setLoading(false);
       navigate("/feed");
-    } catch (e) {
+    } catch {
       setError("Error al iniciar sesión.");
       setLoading(false);
     }
@@ -99,7 +103,16 @@ function Login() {
         </button>
       </form>
 
-      {showRegister && <Register onClose={() => setShowRegister(false)} />}
+      {showRegister && (
+        <Register
+          onClose={() => setShowRegister(false)}
+          onSuccess={(newUser) => {
+            localStorage.setItem(SESSION_KEY, JSON.stringify(newUser));
+            setShowRegister(false);
+            navigate("/feed");
+          }}
+        />
+      )}
     </section>
   );
 }

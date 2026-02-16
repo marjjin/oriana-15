@@ -1,0 +1,88 @@
+.oriana-feed {
+	display: flex;
+	justify-content: center;
+	padding: 0 1rem 2.2rem;
+	background: linear-gradient(140deg, #fff8f5 0%, #fff2df 100%);
+	font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+	position: relative;
+}
+
+.oriana-feed__container {
+	width: min(100%, 520px);
+	background: #ffffff;
+	border: 1.5px solid #f3d39a;
+	border-radius: 1rem;
+	box-shadow: 0 12px 24px rgba(197, 131, 76, 0.15);
+	padding: 1rem 0;
+}
+
+.oriana-feed__topbar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.8rem;
+	margin-bottom: 0.9rem;
+    padding: 0 1rem;
+}
+
+.oriana-feed__title {
+	margin: 0;
+	font-size: 1.25rem;
+	color: #8a5838;
+}
+
+.oriana-feed__logout {
+	border: 1px solid #efc37f;
+	background: #fff8ed;
+	color: #b6704e;
+	border-radius: 999px;
+	padding: 0.45rem 0.85rem;
+	font-size: 0.82rem;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.oriana-feed__label {
+	font-size: 0.83rem;
+	font-weight: 600;
+	color: #8f5a4a;
+}
+
+.oriana-feed__error {
+	margin: 0 0 0.8rem;
+	color: #c0332a;
+	background: #ffefed;
+	border: 1px solid #f7c4bc;
+	border-radius: 0.6rem;
+	padding: 0.55rem 0.75rem;
+	font-size: 0.88rem;
+}
+
+.oriana-feed__posts {
+	display: grid;
+	gap: 0.8rem;
+}
+
+.oriana-feed__empty {
+	margin: 0;
+	padding: 1.1rem;
+	text-align: center;
+	color: #9c7758;
+	border: 1px dashed #efce97;
+	border-radius: 0.8rem;
+	background: #fffdf8;
+}
+
+@media (max-width: 768px) {
+	.oriana-feed {
+		padding: 0 0 2.2rem;
+	}
+
+	.oriana-feed__container {
+		width: 100%;
+		max-width: 100%;
+		border-left: none;
+		border-right: none;
+		border-radius: 0;
+	}
+}

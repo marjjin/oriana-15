@@ -3,7 +3,7 @@ import "./register.css";
 import { supabase } from "../../lib/supabaseClient";
 import sha256 from "crypto-js/sha256";
 
-function Register({ onClose }) {
+function Register({ onClose, onSuccess }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -19,7 +19,7 @@ function Register({ onClose }) {
     }
     try {
       // Verificar si el usuario ya existe
-      const { data: existing, error: existError } = await supabase
+      const { data: existing } = await supabase
         .from("users")
         .select("id")
         .eq("user_name", username)
@@ -32,17 +32,24 @@ function Register({ onClose }) {
       // Hashear la contraseña
       const password_hash = sha256(password).toString();
       // Insertar el usuario
-      const { error: insertError } = await supabase
+      const { data: insertedUsers, error: insertError } = await supabase
         .from("users")
-        .insert([{ user_name: username, password_hash }]);
+        .insert([{ user_name: username, password_hash }])
+        .select("id, user_name");
       if (insertError) {
         setError("Error al crear la cuenta.");
         setLoading(false);
         return;
       }
+
+      const createdUser = insertedUsers?.[0];
       setLoading(false);
+      if (createdUser && onSuccess) {
+        onSuccess(createdUser);
+        return;
+      }
       onClose();
-    } catch (e) {
+    } catch {
       setError("Error al crear la cuenta.");
       setLoading(false);
     }
