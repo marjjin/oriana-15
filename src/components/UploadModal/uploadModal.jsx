@@ -17,8 +17,22 @@ const ADJUSTMENT_LABELS = {
 function CameraIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <path d="M8 7.5h1.2l1-1.6a1.5 1.5 0 0 1 1.28-.72h1.04c.52 0 1 .27 1.28.72l1 1.6H16a3 3 0 0 1 3 3v6.5a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3V10.5a3 3 0 0 1 3-3Z" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="12" cy="13.5" r="3.2" fill="none" stroke="currentColor" strokeWidth="1.8" />
+      <path
+        d="M8 7.5h1.2l1-1.6a1.5 1.5 0 0 1 1.28-.72h1.04c.52 0 1 .27 1.28.72l1 1.6H16a3 3 0 0 1 3 3v6.5a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3V10.5a3 3 0 0 1 3-3Z"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle
+        cx="12"
+        cy="13.5"
+        r="3.2"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      />
     </svg>
   );
 }
@@ -26,9 +40,25 @@ function CameraIcon() {
 function GalleryIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <rect x="4.5" y="5.5" width="15" height="13" rx="2.2" fill="none" stroke="currentColor" strokeWidth="1.8" />
+      <rect
+        x="4.5"
+        y="5.5"
+        width="15"
+        height="13"
+        rx="2.2"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      />
       <circle cx="9" cy="10" r="1.3" fill="currentColor" />
-      <path d="m7.3 16.5 3.5-3.5a1.3 1.3 0 0 1 1.84 0l1 1 1.15-1.15a1.3 1.3 0 0 1 1.84 0l1.87 1.87" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="m7.3 16.5 3.5-3.5a1.3 1.3 0 0 1 1.84 0l1 1 1.15-1.15a1.3 1.3 0 0 1 1.84 0l1.87 1.87"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
@@ -36,8 +66,22 @@ function GalleryIcon() {
 function RotateIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <path d="M7 8.5H3.8V5.3" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M4.2 8.5a8 8 0 1 1 2.3 9.2" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M7 8.5H3.8V5.3"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M4.2 8.5a8 8 0 1 1 2.3 9.2"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
@@ -45,9 +89,24 @@ function RotateIcon() {
 function FlipIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <path d="M12 5v14" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-      <path d="M11.2 18H6.6a1.6 1.6 0 0 1-1.6-1.6V7.6A1.6 1.6 0 0 1 6.6 6h4.6Z" fill="none" stroke="currentColor" strokeWidth="1.8" />
-      <path d="M12.8 18h4.6a1.6 1.6 0 0 0 1.6-1.6V7.6A1.6 1.6 0 0 0 17.4 6h-4.6Z" fill="currentColor" opacity="0.2" />
+      <path
+        d="M12 5v14"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+      />
+      <path
+        d="M11.2 18H6.6a1.6 1.6 0 0 1-1.6-1.6V7.6A1.6 1.6 0 0 1 6.6 6h4.6Z"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      />
+      <path
+        d="M12.8 18h4.6a1.6 1.6 0 0 0 1.6-1.6V7.6A1.6 1.6 0 0 0 17.4 6h-4.6Z"
+        fill="currentColor"
+        opacity="0.2"
+      />
     </svg>
   );
 }
@@ -55,8 +114,21 @@ function FlipIcon() {
 function BrightnessIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" strokeWidth="1.8" />
-      <path d="M12 3.5v2.2M12 18.3v2.2M3.5 12h2.2M18.3 12h2.2M5.9 5.9l1.5 1.5M16.6 16.6l1.5 1.5M18.1 5.9l-1.5 1.5M7.4 16.6l-1.5 1.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+      <circle
+        cx="12"
+        cy="12"
+        r="3.2"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      />
+      <path
+        d="M12 3.5v2.2M12 18.3v2.2M3.5 12h2.2M18.3 12h2.2M5.9 5.9l1.5 1.5M16.6 16.6l1.5 1.5M18.1 5.9l-1.5 1.5M7.4 16.6l-1.5 1.5"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }
@@ -64,8 +136,19 @@ function BrightnessIcon() {
 function ContrastIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <circle cx="12" cy="12" r="7.3" fill="none" stroke="currentColor" strokeWidth="1.8" />
-      <path d="M12 4.7a7.3 7.3 0 0 1 0 14.6Z" fill="currentColor" opacity="0.24" />
+      <circle
+        cx="12"
+        cy="12"
+        r="7.3"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      />
+      <path
+        d="M12 4.7a7.3 7.3 0 0 1 0 14.6Z"
+        fill="currentColor"
+        opacity="0.24"
+      />
     </svg>
   );
 }
@@ -73,8 +156,19 @@ function ContrastIcon() {
 function SaturationIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <path d="M12 4.5c2.4 3 5.8 6.5 5.8 9.4a5.8 5.8 0 1 1-11.6 0c0-2.9 3.4-6.4 5.8-9.4Z" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
-      <path d="M12 7.4v12.2" fill="none" stroke="currentColor" strokeWidth="1.6" />
+      <path
+        d="M12 4.5c2.4 3 5.8 6.5 5.8 9.4a5.8 5.8 0 1 1-11.6 0c0-2.9 3.4-6.4 5.8-9.4Z"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M12 7.4v12.2"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.6"
+      />
     </svg>
   );
 }
@@ -109,7 +203,10 @@ async function prepareImageFile(file, rotation, flipHorizontal, adjustments) {
       rotationCanvas.width = swapSides ? image.height : image.width;
       rotationCanvas.height = swapSides ? image.width : image.height;
 
-      rotationContext.translate(rotationCanvas.width / 2, rotationCanvas.height / 2);
+      rotationContext.translate(
+        rotationCanvas.width / 2,
+        rotationCanvas.height / 2,
+      );
       rotationContext.rotate((normalizedRotation * Math.PI) / 180);
       if (flipHorizontal) {
         rotationContext.scale(-1, 1);
@@ -279,9 +376,20 @@ function UploadModal({ uploading, error, onSubmit }) {
 
     setLocalError("");
 
+    // Si la descripción está vacía, usar 'sin descripcion'
+    const captionToSend = caption.trim() === "" ? "sin descripcion" : caption;
+
     try {
-      const finalFile = await prepareImageFile(selectedFile, rotation, flipHorizontal, adjustments);
-      const success = await onSubmit({ file: finalFile, caption });
+      const finalFile = await prepareImageFile(
+        selectedFile,
+        rotation,
+        flipHorizontal,
+        adjustments,
+      );
+      const success = await onSubmit({
+        file: finalFile,
+        caption: captionToSend,
+      });
       if (success) {
         handleClose();
       }
@@ -359,7 +467,9 @@ function UploadModal({ uploading, error, onSubmit }) {
             )}
 
             <p className="oriana-upload__filename">
-              {selectedFile ? selectedFile.name : "Todavía no elegiste una imagen"}
+              {selectedFile
+                ? selectedFile.name
+                : "Todavía no elegiste una imagen"}
             </p>
 
             {selectedFile && (
@@ -385,7 +495,9 @@ function UploadModal({ uploading, error, onSubmit }) {
                   />
                 </div>
 
-                <p className="oriana-upload__hint">Recorte automático: 4:5 suave al publicar.</p>
+                <p className="oriana-upload__hint">
+                  Recorte automático: 4:5 suave al publicar.
+                </p>
 
                 <div className="oriana-upload__tools">
                   <button
@@ -422,7 +534,9 @@ function UploadModal({ uploading, error, onSubmit }) {
                     aria-pressed={selectedAdjustment === "brightness"}
                     aria-label="Ajustar brillo"
                     onClick={() =>
-                      setSelectedAdjustment((prev) => (prev === "brightness" ? null : "brightness"))
+                      setSelectedAdjustment((prev) =>
+                        prev === "brightness" ? null : "brightness",
+                      )
                     }
                   >
                     <span className="oriana-upload__icon oriana-upload__icon--tool">
@@ -437,7 +551,9 @@ function UploadModal({ uploading, error, onSubmit }) {
                     aria-pressed={selectedAdjustment === "contrast"}
                     aria-label="Ajustar contraste"
                     onClick={() =>
-                      setSelectedAdjustment((prev) => (prev === "contrast" ? null : "contrast"))
+                      setSelectedAdjustment((prev) =>
+                        prev === "contrast" ? null : "contrast",
+                      )
                     }
                   >
                     <span className="oriana-upload__icon oriana-upload__icon--tool">
@@ -452,7 +568,9 @@ function UploadModal({ uploading, error, onSubmit }) {
                     aria-pressed={selectedAdjustment === "saturation"}
                     aria-label="Ajustar saturación"
                     onClick={() =>
-                      setSelectedAdjustment((prev) => (prev === "saturation" ? null : "saturation"))
+                      setSelectedAdjustment((prev) =>
+                        prev === "saturation" ? null : "saturation",
+                      )
                     }
                   >
                     <span className="oriana-upload__icon oriana-upload__icon--tool">
@@ -464,7 +582,9 @@ function UploadModal({ uploading, error, onSubmit }) {
                 {selectedAdjustment && (
                   <div className="oriana-upload__adjustments">
                     <div className="oriana-upload__adjust-row">
-                      <label htmlFor="adjust_active">{ADJUSTMENT_LABELS[selectedAdjustment]}</label>
+                      <label htmlFor="adjust_active">
+                        {ADJUSTMENT_LABELS[selectedAdjustment]}
+                      </label>
                       <span>{adjustments[selectedAdjustment]}%</span>
                     </div>
 
@@ -505,7 +625,9 @@ function UploadModal({ uploading, error, onSubmit }) {
               id="upload_caption"
               placeholder="Escribí algo sobre tu imagen"
               value={caption}
-              onChange={(event) => setCaption(event.target.value.slice(0, CAPTION_MAX_LENGTH))}
+              onChange={(event) =>
+                setCaption(event.target.value.slice(0, CAPTION_MAX_LENGTH))
+              }
               rows={4}
               maxLength={CAPTION_MAX_LENGTH}
             />
@@ -517,7 +639,11 @@ function UploadModal({ uploading, error, onSubmit }) {
             {localError && <p className="oriana-upload__error">{localError}</p>}
             {error && <p className="oriana-upload__error">{error}</p>}
 
-            <button className="oriana-upload__submit" type="submit" disabled={uploading}>
+            <button
+              className="oriana-upload__submit"
+              type="submit"
+              disabled={uploading}
+            >
               {uploading ? "Publicando..." : "Publicar"}
             </button>
           </form>
