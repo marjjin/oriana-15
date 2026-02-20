@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient";
 import PostCard from "./PostCard";
-import UploadModal from "../UploadModal/uploadModal";
+import UploadModal from "../UploadModal";
 import "./feed.css";
 
 const SESSION_KEY = "oriana_current_user";
