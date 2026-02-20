@@ -1,0 +1,55 @@
+.oriana-like {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0;
+}
+
+.oriana-like__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: none;
+  background: transparent;
+  color: #3f2a1f;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 0.12s ease, color 0.16s ease, background 0.16s ease;
+}
+
+.oriana-like__button:hover {
+  background: rgba(212, 141, 86, 0.12);
+}
+
+.oriana-like__button:active {
+  transform: scale(0.94);
+}
+
+.oriana-like__button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.oriana-like__button--active {
+  color: #e5486d;
+}
+
+.oriana-like__icon {
+  width: 1.54rem;
+  height: 1.54rem;
+  display: inline-flex;
+}
+
+.oriana-like__icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.oriana-like__count {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #6f4633;
+  line-height: 1;
+}

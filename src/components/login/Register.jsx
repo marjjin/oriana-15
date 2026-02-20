@@ -3,6 +3,20 @@ import "./register.css";
 import { supabase } from "../../lib/supabaseClient";
 import sha256 from "crypto-js/sha256";
 
+function buildSessionUser(userRow) {
+  if (!userRow) {
+    return null;
+  }
+
+  const safeUser = { ...userRow };
+  delete safeUser.password_hash;
+
+  return {
+    ...safeUser,
+    profile_photo_url: safeUser.profile_photo_url || "",
+  };
+}
+
 function Register({ onClose, onSuccess }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -12,37 +26,51 @@ function Register({ onClose, onSuccess }) {
   const handleRegister = async () => {
     setLoading(true);
     setError("");
-    if (!username || !password) {
+    const normalizedUsername = username.trim();
+
+    if (!normalizedUsername || !password) {
       setError("Completa todos los campos.");
       setLoading(false);
       return;
     }
     try {
-      // Verificar si el usuario ya existe
-      const { data: existing } = await supabase
+      const { data: existingUsers, error: existingError } = await supabase
         .from("users")
         .select("id")
-        .eq("user_name", username)
-        .single();
-      if (existing) {
+        .ilike("user_name", normalizedUsername)
+        .limit(1);
+
+      if (existingError) {
+        setError("No se pudo validar el nombre de usuario.");
+        setLoading(false);
+        return;
+      }
+
+      if ((existingUsers || []).length > 0) {
         setError("El usuario ya existe.");
         setLoading(false);
         return;
       }
-      // Hashear la contraseña
+
       const password_hash = sha256(password).toString();
-      // Insertar el usuario
+
       const { data: insertedUsers, error: insertError } = await supabase
         .from("users")
-        .insert([{ user_name: username, password_hash }])
-        .select("id, user_name");
+        .insert([{ user_name: normalizedUsername, password_hash }])
+        .select("*");
+
       if (insertError) {
+        if (insertError.code === "23505") {
+          setError("El usuario ya existe.");
+          setLoading(false);
+          return;
+        }
         setError("Error al crear la cuenta.");
         setLoading(false);
         return;
       }
 
-      const createdUser = insertedUsers?.[0];
+      const createdUser = buildSessionUser(insertedUsers?.[0]);
       setLoading(false);
       if (createdUser && onSuccess) {
         onSuccess(createdUser);

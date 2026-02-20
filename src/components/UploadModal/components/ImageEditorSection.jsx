@@ -27,7 +27,10 @@ function ImageEditorSection({
   }
 
   const selectedValue = adjustments[selectedAdjustment] ?? 0;
-  const selectedValueLabel = `${selectedValue > 0 ? `+${selectedValue}` : selectedValue}%`;
+  const selectedValueLabel =
+    selectedValue === 0
+      ? "Neutral (0%)"
+      : `${selectedValue > 0 ? `+${selectedValue}` : selectedValue}%`;
 
   return (
     <>

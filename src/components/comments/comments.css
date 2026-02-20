@@ -1,0 +1,279 @@
+body.oriana-comments-modal-open {
+  overflow: hidden;
+  touch-action: none;
+}
+
+.oriana-comments {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0;
+}
+
+.oriana-comments__trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: #3f2a1f;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.oriana-comments__trigger:hover {
+  background: rgba(212, 141, 86, 0.12);
+}
+
+.oriana-comments__trigger-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  display: inline-flex;
+}
+
+.oriana-comments__trigger-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.oriana-comments__trigger-count {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #6f4633;
+  line-height: 1;
+}
+
+.oriana-comments__sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(35, 20, 12, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.8rem;
+  z-index: 55;
+}
+
+.oriana-comments__sheet {
+  width: min(95vw, 480px);
+  max-height: min(86vh, 620px);
+  border: 1.5px solid #f0d3aa;
+  border-radius: 1rem;
+  background: #fffdf9;
+  box-shadow: 0 14px 28px rgba(197, 131, 76, 0.2);
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+}
+
+.oriana-comments__sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.8rem 0.82rem 0.55rem;
+  border-bottom: 1px solid #f5e7ca;
+}
+
+.oriana-comments__sheet-title {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #8a5838;
+}
+
+.oriana-comments__sheet-close {
+  border: 1px solid #efc37f;
+  background: #fff8ed;
+  color: #b6704e;
+  border-radius: 999px;
+  width: 1.85rem;
+  height: 1.85rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.oriana-comments__sheet-subtitle {
+  margin: 0;
+  padding: 0.42rem 0.82rem;
+  font-size: 0.78rem;
+  color: #9d7b5a;
+  border-bottom: 1px solid #f8edd8;
+}
+
+.oriana-comments__sheet-body {
+  padding: 0.58rem 0.82rem 0.35rem;
+  overflow: auto;
+}
+
+.oriana-comments__state {
+  margin: 0;
+  font-size: 0.78rem;
+  color: #9d7b5a;
+}
+
+.oriana-comments__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.oriana-comments__item {
+  border: 1px solid #f4dfbd;
+  border-radius: 0.55rem;
+  padding: 0.42rem 0.5rem;
+  background: #fffdf8;
+}
+
+.oriana-comments__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.oriana-comments__meta-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.oriana-comments__user {
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  font-size: 0.77rem;
+  font-weight: 700;
+  color: #7a4d38;
+}
+
+.oriana-comments__date {
+  font-size: 0.72rem;
+  color: #af8e6d;
+}
+
+.oriana-comments__delete {
+  border: none;
+  background: transparent;
+  color: #b3644e;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+}
+
+.oriana-comments__delete:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.oriana-comments__modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(35, 20, 12, 0.36);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 60;
+}
+
+.oriana-comments__modal {
+  width: min(92vw, 360px);
+  border: 1.5px solid #f0d3aa;
+  border-radius: 0.85rem;
+  background: linear-gradient(180deg, #fffaf2 0%, #fff4e6 100%);
+  box-shadow: 0 14px 28px rgba(197, 131, 76, 0.2);
+  padding: 0.9rem;
+}
+
+.oriana-comments__modal-title {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #8a5838;
+}
+
+.oriana-comments__modal-text {
+  margin: 0.45rem 0 0;
+  font-size: 0.79rem;
+  color: #7a4d38;
+}
+
+.oriana-comments__modal-actions {
+  margin-top: 0.72rem;
+  display: flex;
+  gap: 0.42rem;
+  justify-content: flex-end;
+}
+
+.oriana-comments__modal-btn {
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 0.36rem 0.66rem;
+  cursor: pointer;
+}
+
+.oriana-comments__modal-btn--danger {
+  border: 1px solid #e2a05e;
+  background: #ffe9cf;
+  color: #9a5f41;
+}
+
+.oriana-comments__modal-btn--ghost {
+  border: 1px solid #eccd9f;
+  background: #fffdf9;
+  color: #8a5838;
+}
+
+.oriana-comments__modal-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.oriana-comments__text {
+  margin: 0.2rem 0 0;
+  font-size: 0.8rem;
+  color: #5d3f2f;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.oriana-comments__form {
+  margin-top: 0;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.45rem;
+  padding: 0.62rem 0.82rem 0.78rem;
+  border-top: 1px solid #f5e7ca;
+}
+
+.oriana-comments__input {
+  border: 1px solid #edc78a;
+  border-radius: 999px;
+  padding: 0.42rem 0.68rem;
+  font-size: 0.82rem;
+  color: #4d3550;
+  background: #ffffff;
+}
+
+.oriana-comments__submit {
+  border: 1px solid #e8b26a;
+  border-radius: 999px;
+  background: #fff6e8;
+  color: #9a5f41;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.36rem 0.68rem;
+  cursor: pointer;
+}
+
+.oriana-comments__submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

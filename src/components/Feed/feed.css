@@ -25,10 +25,52 @@
     padding: 0 1rem;
 }
 
-.oriana-feed__title {
-	margin: 0;
-	font-size: 1.25rem;
+.oriana-feed__profile-entry {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.45rem;
+	border: none;
+	background: transparent;
+	color: #7a4d38;
+	padding: 0.2rem 0;
+	font-size: 0.92rem;
+	font-weight: 700;
+	cursor: pointer;
+	max-width: 68%;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.oriana-feed__profile-entry-avatar-wrap {
+	width: 1.9rem;
+	height: 1.9rem;
+	border-radius: 999px;
+	overflow: hidden;
+	border: 1.4px solid #efc37f;
+	background: #fff4e3;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+}
+
+.oriana-feed__profile-entry-avatar {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.oriana-feed__profile-entry-avatar-fallback {
+	font-size: 0.82rem;
+	font-weight: 800;
 	color: #8a5838;
+}
+
+.oriana-feed__profile-entry-name {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .oriana-feed__logout {

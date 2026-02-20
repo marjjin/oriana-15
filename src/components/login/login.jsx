@@ -7,6 +7,20 @@ import "./login.css";
 
 const SESSION_KEY = "oriana_current_user";
 
+function buildSessionUser(userRow) {
+  if (!userRow) {
+    return null;
+  }
+
+  const safeUser = { ...userRow };
+  delete safeUser.password_hash;
+
+  return {
+    ...safeUser,
+    profile_photo_url: safeUser.profile_photo_url || "",
+  };
+}
+
 function Login({ onLogin }) {
   const [showRegister, setShowRegister] = useState(false);
   const [username, setUsername] = useState("");
@@ -28,7 +42,7 @@ function Login({ onLogin }) {
       const password_hash = sha256(password).toString();
       const { data: user, error: userError } = await supabase
         .from("users")
-        .select("id, user_name")
+        .select("*")
         .eq("user_name", username)
         .eq("password_hash", password_hash)
         .single();
@@ -38,10 +52,12 @@ function Login({ onLogin }) {
         return;
       }
 
+      const sessionUser = buildSessionUser(user);
+
       if (onLogin) {
-        onLogin(user);
+        onLogin(sessionUser);
       } else {
-        localStorage.setItem(SESSION_KEY, JSON.stringify(user));
+        localStorage.setItem(SESSION_KEY, JSON.stringify(sessionUser));
       }
       setLoading(false);
       navigate("/feed", { replace: true });

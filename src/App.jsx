@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { HashRouter, Navigate, Route, Routes } from "react-router-dom";
 import Header from "./components/header/headers";
 import Login from "./components/login/login";
 import Footer from "./components/Footer/footer";
 import Feed from "./components/Feed/feed";
+import Profile from "./components/Profile";
+import { supabase } from "./lib/supabaseClient";
 
 const SESSION_KEY = "oriana_current_user";
 
@@ -24,6 +26,39 @@ function getSessionUser() {
 function App() {
   const [sessionUser, setSessionUser] = useState(() => getSessionUser());
 
+  useEffect(() => {
+    const syncSessionUser = async () => {
+      if (!sessionUser?.id) {
+        return;
+      }
+
+      const { data: dbUser } = await supabase
+        .from("users")
+        .select("*")
+        .eq("id", sessionUser.id)
+        .maybeSingle();
+
+      if (!dbUser?.id) {
+        return;
+      }
+
+      const nextUser = { ...dbUser };
+      delete nextUser.password_hash;
+
+      setSessionUser((prevUser) => {
+        if (!prevUser?.id || String(prevUser.id) !== String(nextUser.id)) {
+          return prevUser;
+        }
+
+        const mergedUser = { ...prevUser, ...nextUser };
+        localStorage.setItem(SESSION_KEY, JSON.stringify(mergedUser));
+        return mergedUser;
+      });
+    };
+
+    syncSessionUser();
+  }, [sessionUser?.id]);
+
   const handleLogin = (user) => {
     localStorage.setItem(SESSION_KEY, JSON.stringify(user));
     setSessionUser(user);
@@ -32,6 +67,18 @@ function App() {
   const handleLogout = () => {
     localStorage.removeItem(SESSION_KEY);
     setSessionUser(null);
+  };
+
+  const handleProfileUpdate = (updates) => {
+    setSessionUser((prevUser) => {
+      if (!prevUser) {
+        return prevUser;
+      }
+
+      const nextUser = { ...prevUser, ...updates };
+      localStorage.setItem(SESSION_KEY, JSON.stringify(nextUser));
+      return nextUser;
+    });
   };
 
   return (
@@ -47,6 +94,34 @@ function App() {
           element={
             sessionUser ? (
               <Feed currentUser={sessionUser} onLogout={handleLogout} />
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
+        />
+        <Route
+          path="/perfil"
+          element={
+            sessionUser ? (
+              <Profile
+                currentUser={sessionUser}
+                onLogout={handleLogout}
+                onProfileUpdate={handleProfileUpdate}
+              />
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
+        />
+        <Route
+          path="/perfil/:userId"
+          element={
+            sessionUser ? (
+              <Profile
+                currentUser={sessionUser}
+                onLogout={handleLogout}
+                onProfileUpdate={handleProfileUpdate}
+              />
             ) : (
               <Navigate to="/" replace />
             )

@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient";
 import PostCard from "./PostCard";
 import UploadModal from "../UploadModal";
+import { usePostLikes } from "../likes";
+import { usePostComments } from "../comments";
 import "./feed.css";
 
 const SESSION_KEY = "oriana_current_user";
@@ -46,6 +48,21 @@ function Feed({ currentUser: currentUserProp, onLogout }) {
 	const [error, setError] = useState("");
 
 	const currentUser = useMemo(() => currentUserProp || getSavedUser(), [currentUserProp]);
+	const { enrichPostsWithLikes, toggleLike, pendingByPostId } = usePostLikes(
+		currentUser?.id,
+		setError,
+	);
+	const {
+		enrichPostsWithCommentCounts,
+		openByPostId,
+		loadingByPostId,
+		submittingByPostId,
+		deletingByCommentId,
+		commentsByPostId,
+		toggleComments,
+		addComment,
+		removeComment,
+	} = usePostComments(currentUser?.id, setError);
 
 	const loadPosts = async () => {
 		setLoading(true);
@@ -69,21 +86,29 @@ function Feed({ currentUser: currentUserProp, onLogout }) {
 		if (userIds.length > 0) {
 			const { data: usersRows } = await supabase
 				.from("users")
-				.select("id, user_name")
+				.select("*")
 				.in("id", userIds);
 
 			usersById = (usersRows || []).reduce((acc, user) => {
-				acc[user.id] = user.user_name;
+				acc[user.id] = {
+					name: user.user_name,
+					avatarUrl: user.profile_photo_url || "",
+				};
 				return acc;
 			}, {});
 		}
 
 		const normalizedPosts = (postRows || []).map((post) => ({
 			...post,
-			user_name: usersById[post.user_id] || "Usuario",
+			user_name: usersById[post.user_id]?.name || "Usuario",
+			user_avatar_url:
+				usersById[post.user_id]?.avatarUrl ||
+				(currentUser?.id === post.user_id ? currentUser.profile_photo_url || "" : ""),
 		}));
 
-		setPosts(normalizedPosts);
+		const postsWithLikes = await enrichPostsWithLikes(normalizedPosts);
+		const postsWithLikesAndComments = await enrichPostsWithCommentCounts(postsWithLikes);
+		setPosts(postsWithLikesAndComments);
 		setLoading(false);
 	};
 
@@ -171,11 +196,128 @@ function Feed({ currentUser: currentUserProp, onLogout }) {
 		navigate("/", { replace: true });
 	};
 
+	const handleToggleLike = async (postId) => {
+		const currentPost = posts.find((post) => post.id === postId);
+		if (!currentPost) {
+			return;
+		}
+
+		const wasLiked = Boolean(currentPost.likedByCurrentUser);
+
+		setPosts((prevPosts) =>
+			prevPosts.map((post) => {
+				if (post.id !== postId) {
+					return post;
+				}
+
+				return {
+					...post,
+					likedByCurrentUser: !wasLiked,
+					likeCount: Math.max(0, (post.likeCount || 0) + (wasLiked ? -1 : 1)),
+				};
+			}),
+		);
+
+		const success = await toggleLike({ postId, currentlyLiked: wasLiked });
+
+		if (!success) {
+			setPosts((prevPosts) =>
+				prevPosts.map((post) => {
+					if (post.id !== postId) {
+						return post;
+					}
+
+					return {
+						...post,
+						likedByCurrentUser: wasLiked,
+						likeCount: Math.max(0, (post.likeCount || 0) + (wasLiked ? 1 : -1)),
+					};
+				}),
+			);
+		}
+	};
+
+	const handleAddComment = async ({ postId, text }) => {
+		const success = await addComment({ postId, text });
+
+		if (success) {
+			setPosts((prevPosts) =>
+				prevPosts.map((post) => {
+					if (post.id !== postId) {
+						return post;
+					}
+
+					return {
+						...post,
+						commentCount: (post.commentCount || 0) + 1,
+					};
+				}),
+			);
+		}
+
+		return success;
+	};
+
+	const handleDeleteComment = async ({ postId, commentId }) => {
+		const success = await removeComment({ postId, commentId });
+
+		if (success) {
+			setPosts((prevPosts) =>
+				prevPosts.map((post) => {
+					if (post.id !== postId) {
+						return post;
+					}
+
+					return {
+						...post,
+						commentCount: Math.max(0, (post.commentCount || 0) - 1),
+					};
+				}),
+			);
+		}
+
+		return success;
+	};
+
+	const handleOpenProfile = (userId) => {
+		if (!userId) {
+			return;
+		}
+
+		navigate(`/perfil/${userId}`);
+	};
+
+	const profileEntryAvatarUrl =
+		currentUser?.profile_photo_url || "";
+	const profileEntryFallback =
+		(currentUser?.user_name || "U").trim().charAt(0).toUpperCase() || "U";
+
 	return (
 		<section className="oriana-feed">
 			<div className="oriana-feed__container">
 				<div className="oriana-feed__topbar">
-					<h2 className="oriana-feed__title">Feed</h2>
+					<button
+						type="button"
+						className="oriana-feed__profile-entry"
+						onClick={() => navigate("/perfil")}
+					>
+						<span className="oriana-feed__profile-entry-avatar-wrap" aria-hidden="true">
+							{profileEntryAvatarUrl ? (
+								<img
+									className="oriana-feed__profile-entry-avatar"
+									src={profileEntryAvatarUrl}
+									alt={`Avatar de ${currentUser?.user_name || "perfil"}`}
+								/>
+							) : (
+								<span className="oriana-feed__profile-entry-avatar-fallback">
+									{profileEntryFallback}
+								</span>
+							)}
+						</span>
+						<span className="oriana-feed__profile-entry-name">
+							@{currentUser?.user_name || "perfil"}
+						</span>
+					</button>
 					<button className="oriana-feed__logout" type="button" onClick={handleLogout}>
 						Cerrar sesión
 					</button>
@@ -192,7 +334,24 @@ function Feed({ currentUser: currentUserProp, onLogout }) {
 
 					{!loading &&
 						posts.map((post) => (
-							<PostCard post={post} formattedDate={formatDate(post.created_at)} key={post.id} />
+							<PostCard
+								post={post}
+								formattedDate={formatDate(post.created_at)}
+								onToggleLike={handleToggleLike}
+								likePending={Boolean(pendingByPostId[post.id])}
+								comments={commentsByPostId[post.id] || []}
+								commentCount={post.commentCount || 0}
+								currentUserId={currentUser?.id}
+								commentsOpen={Boolean(openByPostId[post.id])}
+								commentsLoading={Boolean(loadingByPostId[post.id])}
+								commentSubmitting={Boolean(submittingByPostId[post.id])}
+								deletingByCommentId={deletingByCommentId}
+								onToggleComments={toggleComments}
+								onAddComment={handleAddComment}
+								onDeleteComment={handleDeleteComment}
+								onOpenProfile={handleOpenProfile}
+								key={post.id}
+							/>
 						))}
 				</div>
 			</div>
