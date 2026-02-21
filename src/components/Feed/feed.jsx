@@ -125,9 +125,9 @@ function Feed({ currentUser: currentUserProp, onLogout }) {
 		return () => clearTimeout(timer);
 	}, [navigate, currentUser]);
 
-	const handleUpload = async ({ file, caption }) => {
+	const handleUpload = async ({ file, caption, onUploadProgress }) => {
 		if (!file) {
-			setError("Seleccioná una imagen antes de publicar.");
+			setError("Seleccioná una imagen o un video antes de publicar.");
 			return false;
 		}
 		if (!currentUser?.id) {
@@ -137,6 +137,13 @@ function Feed({ currentUser: currentUserProp, onLogout }) {
 
 		setUploading(true);
 		setError("");
+
+		onUploadProgress?.(2);
+		let progressValue = 2;
+		const progressTimer = setInterval(() => {
+			progressValue = Math.min(90, progressValue + 4);
+			onUploadProgress?.(progressValue);
+		}, 250);
 
 		const safeName = file.name.replace(/\s+/g, "-");
 		const uniquePart =
@@ -150,8 +157,20 @@ function Feed({ currentUser: currentUserProp, onLogout }) {
 			.upload(filePath, file, { upsert: false });
 
 		if (uploadError) {
+			clearInterval(progressTimer);
+			onUploadProgress?.(0);
+			const maxSizeExceeded = /exceeded the maximum allowed size/i.test(uploadError.message || "");
+
+			if (maxSizeExceeded) {
+				setError(
+					"El archivo supera el tamaño máximo permitido por el bucket. Probá con un video más liviano.",
+				);
+				setUploading(false);
+				return false;
+			}
+
 			setError(
-				`No se pudo subir la imagen al bucket ${STORAGE_BUCKET}: ${uploadError.message}`,
+				`No se pudo subir el archivo al bucket ${STORAGE_BUCKET}: ${uploadError.message}`,
 			);
 			setUploading(false);
 			return false;
@@ -163,7 +182,9 @@ function Feed({ currentUser: currentUserProp, onLogout }) {
 
 		const imageUrl = publicData?.publicUrl;
 		if (!imageUrl) {
-			setError("No se pudo obtener la URL pública de la imagen.");
+			clearInterval(progressTimer);
+			onUploadProgress?.(0);
+			setError("No se pudo obtener la URL pública del archivo.");
 			setUploading(false);
 			return false;
 		}
@@ -177,10 +198,15 @@ function Feed({ currentUser: currentUserProp, onLogout }) {
 		]);
 
 		if (insertError) {
+			clearInterval(progressTimer);
+			onUploadProgress?.(0);
 			setError(`No se pudo guardar la publicación en la base de datos: ${insertError.message}`);
 			setUploading(false);
 			return false;
 		}
+
+		clearInterval(progressTimer);
+		onUploadProgress?.(100);
 
 		await loadPosts();
 		setUploading(false);

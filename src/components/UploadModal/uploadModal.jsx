@@ -1,67 +1,55 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useRef } from "react";
 import "./uploadModal.css";
-import { CAPTION_MAX_LENGTH, DEFAULT_ADJUSTMENTS } from "./constants";
-import { prepareImageFile } from "./utils";
-import { FileSourceActions, ImageEditorSection, UploadFabButton } from "./components";
+import {
+  CAPTION_MAX_LENGTH,
+  MAX_VIDEO_DURATION_SECONDS,
+} from "./constants";
+import { FileSourceActions, SelectedMediaSection, UploadFabButton } from "./components";
+import { useUploadModalState, useUploadSubmit } from "./hooks";
+
+function formatBytes(bytes) {
+  const value = Number(bytes);
+  if (!Number.isFinite(value) || value <= 0) {
+    return "0 B";
+  }
+
+  const units = ["B", "KB", "MB", "GB"];
+  const exponent = Math.min(Math.floor(Math.log(value) / Math.log(1024)), units.length - 1);
+  const result = value / 1024 ** exponent;
+  return `${result.toFixed(result >= 100 || exponent === 0 ? 0 : 1)} ${units[exponent]}`;
+}
 
 function UploadModal({ uploading, error, onSubmit }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [caption, setCaption] = useState("");
-  const [rotation, setRotation] = useState(0);
-  const [flipHorizontal, setFlipHorizontal] = useState(false);
-  const [adjustments, setAdjustments] = useState(DEFAULT_ADJUSTMENTS);
-  const [selectedAdjustment, setSelectedAdjustment] = useState(null);
-  const [localError, setLocalError] = useState("");
+  const {
+    isOpen,
+    selectedFile,
+    caption,
+    rotation,
+    flipHorizontal,
+    adjustments,
+    selectedAdjustment,
+    localError,
+    isVideoFile,
+    isImageFile,
+    previewUrl,
+    setCaption,
+    setRotation,
+    setFlipHorizontal,
+    setLocalError,
+    openModal,
+    closeModal,
+    handleSelectFile,
+    clearSelectedFileState,
+    toggleAdjustment,
+    changeAdjustment,
+    resetAdjustments,
+  } = useUploadModalState();
 
   const cameraInputRef = useRef(null);
   const galleryInputRef = useRef(null);
 
-  const previewUrl = useMemo(() => {
-    if (!selectedFile) {
-      return "";
-    }
-    return URL.createObjectURL(selectedFile);
-  }, [selectedFile]);
-
-  useEffect(() => {
-    return () => {
-      if (previewUrl) {
-        URL.revokeObjectURL(previewUrl);
-      }
-    };
-  }, [previewUrl]);
-
-  useEffect(() => {
-    if (!isOpen) {
-      document.body.classList.remove("oriana-upload-open");
-      return;
-    }
-
-    document.body.classList.add("oriana-upload-open");
-
-    return () => {
-      document.body.classList.remove("oriana-upload-open");
-    };
-  }, [isOpen]);
-
-  const handleSelectFile = (event) => {
-    const nextFile = event.target.files?.[0] || null;
-    setSelectedFile(nextFile);
-    setRotation(0);
-    setFlipHorizontal(false);
-    setAdjustments(DEFAULT_ADJUSTMENTS);
-    setSelectedAdjustment(null);
-    setLocalError("");
-  };
-
   const handleRemoveSelectedFile = () => {
-    setSelectedFile(null);
-    setRotation(0);
-    setFlipHorizontal(false);
-    setAdjustments(DEFAULT_ADJUSTMENTS);
-    setSelectedAdjustment(null);
-    setLocalError("");
+    clearSelectedFileState();
 
     if (cameraInputRef.current) {
       cameraInputRef.current.value = "";
@@ -71,76 +59,29 @@ function UploadModal({ uploading, error, onSubmit }) {
     }
   };
 
-  const resetState = () => {
-    setSelectedFile(null);
-    setCaption("");
-    setRotation(0);
-    setFlipHorizontal(false);
-    setAdjustments(DEFAULT_ADJUSTMENTS);
-    setSelectedAdjustment(null);
-    setLocalError("");
-  };
-
-  const handleClose = () => {
-    resetState();
-    setIsOpen(false);
-  };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    if (!selectedFile) {
-      setLocalError("Primero elegí una foto desde cámara o galería.");
-      return;
-    }
-
-    setLocalError("");
-
-    const captionToSend = caption.trim() === "" ? "sin descripcion" : caption;
-
-    try {
-      const finalFile = await prepareImageFile(
-        selectedFile,
-        rotation,
-        flipHorizontal,
-        adjustments,
-      );
-      const success = await onSubmit({
-        file: finalFile,
-        caption: captionToSend,
-      });
-      if (success) {
-        handleClose();
-      }
-    } catch (submitError) {
-      setLocalError(submitError.message || "No se pudo preparar la imagen.");
-    }
-  };
-
-  const handleToggleAdjustment = (adjustmentKey) => {
-    setSelectedAdjustment((prev) => (prev === adjustmentKey ? null : adjustmentKey));
-  };
-
-  const handleAdjustmentChange = (nextValue) => {
-    if (!selectedAdjustment) {
-      return;
-    }
-
-    setAdjustments((prev) => ({
-      ...prev,
-      [selectedAdjustment]: nextValue,
-    }));
-  };
-
-  const handleResetAdjustments = () => {
-    setAdjustments(DEFAULT_ADJUSTMENTS);
-    setSelectedAdjustment(null);
-  };
+  const {
+    handleSubmit,
+    submitProgress,
+    submitMessage,
+    submitActive,
+    uploadTotalBytes,
+    uploadTransferredBytes,
+  } = useUploadSubmit({
+    selectedFile,
+    caption,
+    isVideoFile,
+    rotation,
+    flipHorizontal,
+    adjustments,
+    setLocalError,
+    onSubmit,
+    closeModal,
+  });
 
   return (
     <>
       {isOpen && (
-        <div className="oriana-upload__layer" onClick={handleClose}>
+        <div className="oriana-upload__layer" onClick={closeModal}>
           <form
             className="oriana-upload"
             onSubmit={handleSubmit}
@@ -151,7 +92,7 @@ function UploadModal({ uploading, error, onSubmit }) {
               <button
                 type="button"
                 className="oriana-upload__close"
-                onClick={handleClose}
+                onClick={closeModal}
                 aria-label="Cerrar"
               >
                 ✕
@@ -171,7 +112,7 @@ function UploadModal({ uploading, error, onSubmit }) {
               ref={galleryInputRef}
               className="oriana-upload__hidden"
               type="file"
-              accept="image/*"
+              accept="image/*,video/*"
               onChange={handleSelectFile}
             />
 
@@ -184,12 +125,14 @@ function UploadModal({ uploading, error, onSubmit }) {
 
             <p className="oriana-upload__filename">
               {selectedFile
-                ? selectedFile.name
-                : "Todavía no elegiste una imagen"}
+                ? `${selectedFile.name} (${formatBytes(selectedFile.size)})`
+                : "Todavía no elegiste una foto o video"}
             </p>
 
-            <ImageEditorSection
+            <SelectedMediaSection
               selectedFile={selectedFile}
+              isImageFile={isImageFile}
+              isVideoFile={isVideoFile}
               previewUrl={previewUrl}
               rotation={rotation}
               flipHorizontal={flipHorizontal}
@@ -198,9 +141,10 @@ function UploadModal({ uploading, error, onSubmit }) {
               onRemoveSelectedFile={handleRemoveSelectedFile}
               onRotate={() => setRotation((prev) => prev + 90)}
               onToggleFlip={() => setFlipHorizontal((prev) => !prev)}
-              onToggleAdjustment={handleToggleAdjustment}
-              onAdjustmentChange={handleAdjustmentChange}
-              onResetAdjustments={handleResetAdjustments}
+              onToggleAdjustment={toggleAdjustment}
+              onAdjustmentChange={changeAdjustment}
+              onResetAdjustments={resetAdjustments}
+              maxVideoDurationSeconds={MAX_VIDEO_DURATION_SECONDS}
             />
 
             <label className="oriana-upload__label" htmlFor="upload_caption">
@@ -209,7 +153,7 @@ function UploadModal({ uploading, error, onSubmit }) {
             <textarea
               className="oriana-upload__input oriana-upload__input--description"
               id="upload_caption"
-              placeholder="Escribí algo sobre tu imagen"
+              placeholder="Escribí algo sobre tu publicación"
               value={caption}
               onChange={(event) =>
                 setCaption(event.target.value.slice(0, CAPTION_MAX_LENGTH))
@@ -221,6 +165,25 @@ function UploadModal({ uploading, error, onSubmit }) {
             <p className="oriana-upload__counter">
               {caption.length}/{CAPTION_MAX_LENGTH}
             </p>
+
+            {submitActive && (
+              <div className="oriana-upload__progress" aria-live="polite">
+                <div className="oriana-upload__progress-track">
+                  <div
+                    className="oriana-upload__progress-fill"
+                    style={{ width: `${Math.max(0, Math.min(100, submitProgress))}%` }}
+                  />
+                </div>
+                <p className="oriana-upload__progress-text">
+                  {submitMessage || "Procesando..."} {Math.round(submitProgress)}%
+                </p>
+                {uploadTotalBytes > 0 && (
+                  <p className="oriana-upload__progress-meta">
+                    {formatBytes(uploadTransferredBytes)} / {formatBytes(uploadTotalBytes)}
+                  </p>
+                )}
+              </div>
+            )}
 
             {localError && <p className="oriana-upload__error">{localError}</p>}
             {error && <p className="oriana-upload__error">{error}</p>}
@@ -236,7 +199,7 @@ function UploadModal({ uploading, error, onSubmit }) {
         </div>
       )}
 
-      {!isOpen && <UploadFabButton onClick={() => setIsOpen((prev) => !prev)} />}
+      {!isOpen && <UploadFabButton onClick={openModal} />}
     </>
   );
 }

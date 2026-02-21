@@ -2,6 +2,15 @@ import "./postCard.css";
 import { LikeButton } from "../likes";
 import { CommentsSection } from "../comments";
 
+function isVideoUrl(url) {
+  if (!url || typeof url !== "string") {
+    return false;
+  }
+
+  const cleanUrl = url.split("?")[0].toLowerCase();
+  return /\.(mp4|webm|ogg|mov|m4v)$/i.test(cleanUrl);
+}
+
 function PostCard({
   post,
   formattedDate,
@@ -20,6 +29,7 @@ function PostCard({
   onOpenProfile,
 }) {
   const avatarFallback = (post.user_name || "U").trim().charAt(0).toUpperCase() || "U";
+  const hasVideo = isVideoUrl(post.foto_url);
 
   return (
     <article className="oriana-feed__post" key={post.id}>
@@ -45,12 +55,22 @@ function PostCard({
         <span className="oriana-feed__post-date">{formattedDate}</span>
       </header>
 
-      <img
-        className="oriana-feed__post-image"
-        src={post.foto_url}
-        alt={`Publicación de ${post.user_name}`}
-        loading="lazy"
-      />
+      {hasVideo ? (
+        <video
+          className="oriana-feed__post-image"
+          src={post.foto_url}
+          controls
+          playsInline
+          preload="metadata"
+        />
+      ) : (
+        <img
+          className="oriana-feed__post-image"
+          src={post.foto_url}
+          alt={`Publicación de ${post.user_name}`}
+          loading="lazy"
+        />
+      )}
 
       <div className="oriana-feed__post-actions">
         <LikeButton

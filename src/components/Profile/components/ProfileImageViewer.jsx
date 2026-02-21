@@ -1,5 +1,14 @@
 import { useEffect } from "react";
 
+function isVideoUrl(url) {
+  if (!url || typeof url !== "string") {
+    return false;
+  }
+
+  const cleanUrl = url.split("?")[0].toLowerCase();
+  return /\.(mp4|webm|ogg|mov|m4v)$/i.test(cleanUrl);
+}
+
 function ProfileImageViewer({ open, imageUrl, title, onClose }) {
   useEffect(() => {
     if (!open) {
@@ -27,6 +36,8 @@ function ProfileImageViewer({ open, imageUrl, title, onClose }) {
     return null;
   }
 
+  const hasVideo = isVideoUrl(imageUrl);
+
   return (
     <div className="oriana-profile-viewer" onClick={onClose}>
       <div className="oriana-profile-viewer__content" onClick={(event) => event.stopPropagation()}>
@@ -42,7 +53,21 @@ function ProfileImageViewer({ open, imageUrl, title, onClose }) {
           </button>
         </div>
 
-        <img className="oriana-profile-viewer__image" src={imageUrl} alt={title || "Imagen ampliada"} />
+        {hasVideo ? (
+          <video
+            className="oriana-profile-viewer__image"
+            src={imageUrl}
+            controls
+            playsInline
+            preload="metadata"
+          />
+        ) : (
+          <img
+            className="oriana-profile-viewer__image"
+            src={imageUrl}
+            alt={title || "Imagen ampliada"}
+          />
+        )}
       </div>
     </div>
   );

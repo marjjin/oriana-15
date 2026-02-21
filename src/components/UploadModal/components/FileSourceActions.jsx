@@ -19,14 +19,14 @@ function FileSourceActions({ onCameraClick, onGalleryClick }) {
       <button
         type="button"
         className="oriana-upload__pick"
-        aria-label="Subir de galería"
-        title="Subir de galería"
+        aria-label="Subir foto o video de galería"
+        title="Subir foto o video de galería"
         onClick={onGalleryClick}
       >
         <span className="oriana-upload__icon">
           <GalleryIcon />
         </span>
-        <span className="oriana-upload__pick-label">Galería</span>
+        <span className="oriana-upload__pick-label">Galería (foto/video)</span>
       </button>
     </div>
   );

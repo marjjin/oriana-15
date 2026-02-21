@@ -318,6 +318,38 @@ body.oriana-upload-open {
   text-align: right;
 }
 
+.oriana-upload__progress {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.oriana-upload__progress-track {
+  width: 100%;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: #f2e3c9;
+  overflow: hidden;
+}
+
+.oriana-upload__progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ff7f6a 0%, #d4a436 100%);
+  transition: width 0.2s ease;
+}
+
+.oriana-upload__progress-text {
+  margin: 0;
+  font-size: 0.78rem;
+  color: #8a5e41;
+}
+
+.oriana-upload__progress-meta {
+  margin: 0;
+  font-size: 0.74rem;
+  color: #9b7759;
+}
+
 .oriana-upload__submit {
   margin-top: 0.2rem;
   border: none;

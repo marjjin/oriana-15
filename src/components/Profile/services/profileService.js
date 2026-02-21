@@ -5,6 +5,28 @@ const PROFILE_BUCKET =
   import.meta.env.VITE_SUPABASE_STORAGE_BUCKET ||
   "feed-images";
 
+const POSTS_BUCKET = import.meta.env.VITE_SUPABASE_STORAGE_BUCKET || "feed-images";
+
+function extractStoragePathFromPublicUrl(publicUrl, bucket) {
+  if (!publicUrl || !bucket) {
+    return "";
+  }
+
+  try {
+    const parsedUrl = new URL(publicUrl);
+    const marker = `/object/public/${bucket}/`;
+    const markerIndex = parsedUrl.pathname.indexOf(marker);
+
+    if (markerIndex === -1) {
+      return "";
+    }
+
+    return decodeURIComponent(parsedUrl.pathname.slice(markerIndex + marker.length));
+  } catch {
+    return "";
+  }
+}
+
 export async function fetchProfileSummary(userId) {
   const { data: userRow } = await supabase
     .from("users")
@@ -146,4 +168,38 @@ export async function updateProfile(userId, { userName, avatarFile }) {
     error: null,
     errorCode: null,
   };
+}
+
+export async function deleteProfilePost(userId, postId) {
+  const { data: postRow, error: postFetchError } = await supabase
+    .from("publicaciones")
+    .select("id, foto_url")
+    .eq("id", postId)
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (postFetchError) {
+    return { error: postFetchError };
+  }
+
+  if (!postRow?.id) {
+    return { error: new Error("No se encontró la publicación para eliminar.") };
+  }
+
+  const { error: deleteDbError } = await supabase
+    .from("publicaciones")
+    .delete()
+    .eq("id", postId)
+    .eq("user_id", userId);
+
+  if (deleteDbError) {
+    return { error: deleteDbError };
+  }
+
+  const storagePath = extractStoragePathFromPublicUrl(postRow.foto_url, POSTS_BUCKET);
+  if (storagePath) {
+    await supabase.storage.from(POSTS_BUCKET).remove([storagePath]);
+  }
+
+  return { error: null };
 }

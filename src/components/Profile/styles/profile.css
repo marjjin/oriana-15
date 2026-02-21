@@ -309,6 +309,47 @@
   cursor: not-allowed;
 }
 
+.oriana-profile-modal__confirm-text {
+  margin: 0;
+  font-size: 0.84rem;
+  color: #7c5442;
+  line-height: 1.35;
+}
+
+.oriana-profile-modal__confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.15rem;
+}
+
+.oriana-profile-modal__cancel,
+.oriana-profile-modal__delete {
+  border-radius: 999px;
+  padding: 0.42rem 0.76rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.oriana-profile-modal__cancel {
+  border: 1px solid #efc37f;
+  background: #fff8ed;
+  color: #9a5f41;
+}
+
+.oriana-profile-modal__delete {
+  border: 1px solid #f0a18b;
+  background: #ffe9e3;
+  color: #b74435;
+}
+
+.oriana-profile-modal__cancel:disabled,
+.oriana-profile-modal__delete:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
 .oriana-profile__state {
   color: #9c7758;
   border: 1px dashed #efce97;
@@ -322,19 +363,60 @@
 }
 
 .oriana-profile__card {
+  position: relative;
   border-radius: 0.55rem;
   overflow: hidden;
   border: 1px solid #f2dfbe;
   background: #fffdf9;
 }
 
+.oriana-profile__card-delete {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.35rem;
+  width: 1.65rem;
+  height: 1.65rem;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.45);
+  color: #ffffff;
+  font-size: 0.85rem;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.oriana-profile__card-delete:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
 .oriana-profile__image-button {
+  position: relative;
   display: block;
   width: 100%;
   border: 0;
   background: transparent;
   padding: 0;
   cursor: pointer;
+}
+
+.oriana-profile__video-badge {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.48);
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  line-height: 1;
+  pointer-events: none;
 }
 
 .oriana-profile__image {
