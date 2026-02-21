@@ -2,8 +2,9 @@ import './footer.css'
 
 function Footer() {
 	const currentYear = new Date().getFullYear()
-	const instagramUrl = 'https://instagram.com/tu_usuario'
-	const whatsappUrl = 'https://wa.me/5491100000000'
+	const instagramUrl = 'https://www.instagram.com/tinchocarmona/'
+	const whatsappMessage = encodeURIComponent('Hola, quiero info de diseño y desarrollo web.')
+	const whatsappUrl = `https://wa.me/5493364589521?text=${whatsappMessage}`
 
 	return (
 		<footer className="oriana-footer">
