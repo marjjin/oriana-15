@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient";
 import PostCard from "./PostCard";
@@ -9,6 +9,8 @@ import "./feed.css";
 
 const SESSION_KEY = "oriana_current_user";
 const STORAGE_BUCKET = import.meta.env.VITE_SUPABASE_STORAGE_BUCKET || "feed-images";
+const INITIAL_POSTS_LIMIT = 10;
+const LOAD_MORE_POSTS_LIMIT = 5;
 
 function getSavedUser() {
 	const raw = localStorage.getItem(SESSION_KEY);
@@ -44,8 +46,12 @@ function Feed({ currentUser: currentUserProp, onLogout }) {
 	const navigate = useNavigate();
 	const [posts, setPosts] = useState([]);
 	const [loading, setLoading] = useState(true);
+	const [loadingMore, setLoadingMore] = useState(false);
+	const [hasMorePosts, setHasMorePosts] = useState(true);
+	const [nextOffset, setNextOffset] = useState(0);
 	const [uploading, setUploading] = useState(false);
 	const [error, setError] = useState("");
+	const loadMoreTriggerRef = useRef(null);
 
 	const currentUser = useMemo(() => currentUserProp || getSavedUser(), [currentUserProp]);
 	const { enrichPostsWithLikes, toggleLike, pendingByPostId } = usePostLikes(
@@ -64,53 +70,102 @@ function Feed({ currentUser: currentUserProp, onLogout }) {
 		removeComment,
 	} = usePostComments(currentUser?.id, setError);
 
-	const loadPosts = async () => {
+	const fetchEnrichedPostsPage = useCallback(
+		async ({ offset, limit }) => {
+			const { data: postRows, error: postError } = await supabase
+				.from("publicaciones")
+				.select("id, user_id, foto_url, descripcion, created_at")
+				.order("created_at", { ascending: false })
+				.range(offset, offset + limit - 1);
+
+			if (postError) {
+				return { error: postError, posts: [] };
+			}
+
+			const userIds = [...new Set((postRows || []).map((post) => post.user_id).filter(Boolean))];
+			let usersById = {};
+
+			if (userIds.length > 0) {
+				const { data: usersRows } = await supabase.from("users").select("*").in("id", userIds);
+
+				usersById = (usersRows || []).reduce((acc, user) => {
+					acc[user.id] = {
+						name: user.user_name,
+						avatarUrl: user.profile_photo_url || "",
+					};
+					return acc;
+				}, {});
+			}
+
+			const normalizedPosts = (postRows || []).map((post) => ({
+				...post,
+				user_name: usersById[post.user_id]?.name || "Usuario",
+				user_avatar_url:
+					usersById[post.user_id]?.avatarUrl ||
+					(currentUser?.id === post.user_id ? currentUser.profile_photo_url || "" : ""),
+			}));
+
+			const postsWithLikes = await enrichPostsWithLikes(normalizedPosts);
+			const postsWithLikesAndComments = await enrichPostsWithCommentCounts(postsWithLikes);
+			return {
+				error: null,
+				posts: postsWithLikesAndComments,
+			};
+		},
+		[currentUser, enrichPostsWithCommentCounts, enrichPostsWithLikes],
+	);
+
+	const loadInitialPosts = useCallback(async () => {
 		setLoading(true);
 		setError("");
 
-		const { data: postRows, error: postError } = await supabase
-			.from("publicaciones")
-			.select("id, user_id, foto_url, descripcion, created_at")
-			.order("created_at", { ascending: false });
+		const { error: postError, posts: firstPagePosts } = await fetchEnrichedPostsPage({
+			offset: 0,
+			limit: INITIAL_POSTS_LIMIT,
+		});
 
 		if (postError) {
 			setPosts([]);
+			setHasMorePosts(false);
+			setNextOffset(0);
 			setError("No se pudieron cargar las publicaciones.");
 			setLoading(false);
 			return;
 		}
 
-		const userIds = [...new Set((postRows || []).map((post) => post.user_id).filter(Boolean))];
-		let usersById = {};
+		setPosts(firstPagePosts);
+		setNextOffset(firstPagePosts.length);
+		setHasMorePosts(firstPagePosts.length === INITIAL_POSTS_LIMIT);
+		setLoading(false);
+	}, [fetchEnrichedPostsPage]);
 
-		if (userIds.length > 0) {
-			const { data: usersRows } = await supabase
-				.from("users")
-				.select("*")
-				.in("id", userIds);
-
-			usersById = (usersRows || []).reduce((acc, user) => {
-				acc[user.id] = {
-					name: user.user_name,
-					avatarUrl: user.profile_photo_url || "",
-				};
-				return acc;
-			}, {});
+	const loadMorePosts = useCallback(async () => {
+		if (loading || loadingMore || !hasMorePosts) {
+			return;
 		}
 
-		const normalizedPosts = (postRows || []).map((post) => ({
-			...post,
-			user_name: usersById[post.user_id]?.name || "Usuario",
-			user_avatar_url:
-				usersById[post.user_id]?.avatarUrl ||
-				(currentUser?.id === post.user_id ? currentUser.profile_photo_url || "" : ""),
-		}));
+		setLoadingMore(true);
 
-		const postsWithLikes = await enrichPostsWithLikes(normalizedPosts);
-		const postsWithLikesAndComments = await enrichPostsWithCommentCounts(postsWithLikes);
-		setPosts(postsWithLikesAndComments);
-		setLoading(false);
-	};
+		const { error: postError, posts: nextPosts } = await fetchEnrichedPostsPage({
+			offset: nextOffset,
+			limit: LOAD_MORE_POSTS_LIMIT,
+		});
+
+		if (postError) {
+			setError("No se pudieron cargar más publicaciones.");
+			setLoadingMore(false);
+			return;
+		}
+
+		setPosts((prevPosts) => {
+			const existingIds = new Set(prevPosts.map((post) => post.id));
+			const uniqueNextPosts = nextPosts.filter((post) => !existingIds.has(post.id));
+			return [...prevPosts, ...uniqueNextPosts];
+		});
+		setNextOffset((prevOffset) => prevOffset + nextPosts.length);
+		setHasMorePosts(nextPosts.length === LOAD_MORE_POSTS_LIMIT);
+		setLoadingMore(false);
+	}, [fetchEnrichedPostsPage, hasMorePosts, loading, loadingMore, nextOffset]);
 
 	useEffect(() => {
 		if (!currentUser?.id) {
@@ -119,11 +174,33 @@ function Feed({ currentUser: currentUserProp, onLogout }) {
 		}
 
 		const timer = setTimeout(() => {
-			loadPosts();
+			loadInitialPosts();
 		}, 0);
 
 		return () => clearTimeout(timer);
-	}, [navigate, currentUser]);
+	}, [loadInitialPosts, navigate, currentUser]);
+
+	useEffect(() => {
+		if (!loadMoreTriggerRef.current) {
+			return undefined;
+		}
+
+		const observer = new IntersectionObserver(
+			(entries) => {
+				const [entry] = entries;
+				if (entry?.isIntersecting) {
+					loadMorePosts();
+				}
+			},
+			{ threshold: 0.2 },
+		);
+
+		observer.observe(loadMoreTriggerRef.current);
+
+		return () => {
+			observer.disconnect();
+		};
+	}, [loadMorePosts]);
 
 	const handleUpload = async ({ file, caption, onUploadProgress }) => {
 		if (!file) {
@@ -208,7 +285,7 @@ function Feed({ currentUser: currentUserProp, onLogout }) {
 		clearInterval(progressTimer);
 		onUploadProgress?.(100);
 
-		await loadPosts();
+		await loadInitialPosts();
 		setUploading(false);
 		return true;
 	};
@@ -379,6 +456,14 @@ function Feed({ currentUser: currentUserProp, onLogout }) {
 								key={post.id}
 							/>
 						))}
+
+						{!loading && loadingMore && (
+							<p className="oriana-feed__load-more">Cargando más publicaciones...</p>
+						)}
+
+						{!loading && !loadingMore && hasMorePosts && (
+							<div ref={loadMoreTriggerRef} className="oriana-feed__load-trigger" aria-hidden="true" />
+						)}
 				</div>
 			</div>
 

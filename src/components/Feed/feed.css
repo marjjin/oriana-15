@@ -115,6 +115,18 @@
 	background: #fffdf8;
 }
 
+.oriana-feed__load-more {
+	margin: 0;
+	padding: 0.7rem;
+	text-align: center;
+	color: #9c7758;
+	font-size: 0.9rem;
+}
+
+.oriana-feed__load-trigger {
+	height: 1px;
+}
+
 @media (max-width: 768px) {
 	.oriana-feed {
 		padding: 0 0 2.2rem;
