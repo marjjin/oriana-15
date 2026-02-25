@@ -1,11 +1,12 @@
-import { useEffect, useState } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { HashRouter, Navigate, Route, Routes } from "react-router-dom";
 import Header from "./components/header/headers";
-import Login from "./components/login/login";
 import Footer from "./components/Footer/footer";
-import Feed from "./components/Feed/feed";
-import Profile from "./components/Profile";
 import { supabase } from "./lib/supabaseClient";
+
+const Login = lazy(() => import("./components/login/login"));
+const Feed = lazy(() => import("./components/Feed/feed"));
+const Profile = lazy(() => import("./components/Profile"));
 
 const SESSION_KEY = "oriana_current_user";
 
@@ -84,50 +85,52 @@ function App() {
   return (
     <HashRouter>
       <Header />
-      <Routes>
-        <Route
-          path="/"
-          element={sessionUser ? <Navigate to="/feed" replace /> : <Login onLogin={handleLogin} />}
-        />
-        <Route
-          path="/feed"
-          element={
-            sessionUser ? (
-              <Feed currentUser={sessionUser} onLogout={handleLogout} />
-            ) : (
-              <Navigate to="/" replace />
-            )
-          }
-        />
-        <Route
-          path="/perfil"
-          element={
-            sessionUser ? (
-              <Profile
-                currentUser={sessionUser}
-                onLogout={handleLogout}
-                onProfileUpdate={handleProfileUpdate}
-              />
-            ) : (
-              <Navigate to="/" replace />
-            )
-          }
-        />
-        <Route
-          path="/perfil/:userId"
-          element={
-            sessionUser ? (
-              <Profile
-                currentUser={sessionUser}
-                onLogout={handleLogout}
-                onProfileUpdate={handleProfileUpdate}
-              />
-            ) : (
-              <Navigate to="/" replace />
-            )
-          }
-        />
-      </Routes>
+      <Suspense fallback={<div />}>
+        <Routes>
+          <Route
+            path="/"
+            element={sessionUser ? <Navigate to="/feed" replace /> : <Login onLogin={handleLogin} />}
+          />
+          <Route
+            path="/feed"
+            element={
+              sessionUser ? (
+                <Feed currentUser={sessionUser} onLogout={handleLogout} />
+              ) : (
+                <Navigate to="/" replace />
+              )
+            }
+          />
+          <Route
+            path="/perfil"
+            element={
+              sessionUser ? (
+                <Profile
+                  currentUser={sessionUser}
+                  onLogout={handleLogout}
+                  onProfileUpdate={handleProfileUpdate}
+                />
+              ) : (
+                <Navigate to="/" replace />
+              )
+            }
+          />
+          <Route
+            path="/perfil/:userId"
+            element={
+              sessionUser ? (
+                <Profile
+                  currentUser={sessionUser}
+                  onLogout={handleLogout}
+                  onProfileUpdate={handleProfileUpdate}
+                />
+              ) : (
+                <Navigate to="/" replace />
+              )
+            }
+          />
+        </Routes>
+      </Suspense>
       <Footer />
     </HashRouter>
   );

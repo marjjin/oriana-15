@@ -86,7 +86,10 @@ function Feed({ currentUser: currentUserProp, onLogout }) {
 			let usersById = {};
 
 			if (userIds.length > 0) {
-				const { data: usersRows } = await supabase.from("users").select("*").in("id", userIds);
+				const { data: usersRows } = await supabase
+					.from("users")
+					.select("id, user_name, profile_photo_url")
+					.in("id", userIds);
 
 				usersById = (usersRows || []).reduce((acc, user) => {
 					acc[user.id] = {
@@ -105,8 +108,16 @@ function Feed({ currentUser: currentUserProp, onLogout }) {
 					(currentUser?.id === post.user_id ? currentUser.profile_photo_url || "" : ""),
 			}));
 
-			const postsWithLikes = await enrichPostsWithLikes(normalizedPosts);
-			const postsWithLikesAndComments = await enrichPostsWithCommentCounts(postsWithLikes);
+			const [postsWithLikes, postsWithComments] = await Promise.all([
+				enrichPostsWithLikes(normalizedPosts),
+				enrichPostsWithCommentCounts(normalizedPosts),
+			]);
+
+			const commentsById = new Map(postsWithComments.map((post) => [post.id, post.commentCount || 0]));
+			const postsWithLikesAndComments = postsWithLikes.map((post) => ({
+				...post,
+				commentCount: commentsById.get(post.id) || 0,
+			}));
 			return {
 				error: null,
 				posts: postsWithLikesAndComments,
@@ -202,7 +213,7 @@ function Feed({ currentUser: currentUserProp, onLogout }) {
 		};
 	}, [loadMorePosts]);
 
-	const handleUpload = async ({ file, caption, onUploadProgress }) => {
+	const handleUpload = async ({ file, originalFile, caption, onUploadProgress }) => {
 		if (!file) {
 			setError("Seleccioná una imagen o un video antes de publicar.");
 			return false;
@@ -223,11 +234,16 @@ function Feed({ currentUser: currentUserProp, onLogout }) {
 		}, 250);
 
 		const safeName = file.name.replace(/\s+/g, "-");
+		const originalSafeName = originalFile?.name?.replace(/\s+/g, "-") || safeName;
 		const uniquePart =
 			typeof crypto !== "undefined" && crypto.randomUUID
 				? crypto.randomUUID()
 				: `${Date.now()}-${Math.round(Math.random() * 999999)}`;
-		const filePath = `${currentUser.id}/${Date.now()}-${uniquePart}-${safeName}`;
+		const timestamp = Date.now();
+		const filePath = `${currentUser.id}/${timestamp}-${uniquePart}-${safeName}`;
+		const originalFilePath = originalFile
+			? `originals/${currentUser.id}/${timestamp}-${uniquePart}-${originalSafeName}`
+			: null;
 
 		const { error: uploadError } = await supabase.storage
 			.from(STORAGE_BUCKET)
@@ -251,6 +267,22 @@ function Feed({ currentUser: currentUserProp, onLogout }) {
 			);
 			setUploading(false);
 			return false;
+		}
+
+		if (originalFilePath && originalFile) {
+			const { error: originalUploadError } = await supabase.storage
+				.from(STORAGE_BUCKET)
+				.upload(originalFilePath, originalFile, { upsert: false });
+
+			if (originalUploadError) {
+				clearInterval(progressTimer);
+				onUploadProgress?.(0);
+				setError(
+					`Se subió la versión para el feed, pero falló la copia original: ${originalUploadError.message}`,
+				);
+				setUploading(false);
+				return false;
+			}
 		}
 
 		const { data: publicData } = supabase.storage

@@ -68,6 +68,7 @@ function useUploadSubmit({
               flipHorizontal,
               adjustments,
             );
+        const originalImageFile = isVideoFile ? null : selectedFile;
 
         setUploadTotalBytes(finalFile.size || 0);
         setUploadTransferredBytes(0);
@@ -77,6 +78,7 @@ function useUploadSubmit({
 
         const success = await onSubmit({
           file: finalFile,
+          originalFile: originalImageFile,
           caption: captionToSend,
           onUploadProgress: (uploadProgress) => {
             const normalizedProgress = Math.max(0, Math.min(100, Number(uploadProgress) || 0));
