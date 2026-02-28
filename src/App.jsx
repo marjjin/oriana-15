@@ -1,5 +1,5 @@
 import { Suspense, lazy, useEffect, useState } from "react";
-import { HashRouter, Navigate, Route, Routes } from "react-router-dom";
+import { HashRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import Header from "./components/header/headers";
 import Footer from "./components/Footer/footer";
 import { supabase } from "./lib/supabaseClient";
@@ -7,6 +7,7 @@ import { supabase } from "./lib/supabaseClient";
 const Login = lazy(() => import("./components/login/login"));
 const Feed = lazy(() => import("./components/Feed/feed"));
 const Profile = lazy(() => import("./components/Profile"));
+const LiveScreen = lazy(() => import("./components/LiveScreen/LiveScreen"));
 
 const SESSION_KEY = "oriana_current_user";
 
@@ -22,6 +23,68 @@ function getSessionUser() {
   } catch {
     return null;
   }
+}
+
+function AppShell({ sessionUser, onLogin, onLogout, onProfileUpdate }) {
+  const location = useLocation();
+  const isScreenRoute = location.pathname === "/pantalla";
+
+  return (
+    <>
+      {!isScreenRoute && <Header />}
+      <Suspense fallback={<div />}>
+        <Routes>
+          <Route
+            path="/"
+            element={sessionUser ? <Navigate to="/feed" replace /> : <Login onLogin={onLogin} />}
+          />
+          <Route
+            path="/feed"
+            element={
+              sessionUser ? (
+                <Feed currentUser={sessionUser} onLogout={onLogout} />
+              ) : (
+                <Navigate to="/" replace />
+              )
+            }
+          />
+          <Route
+            path="/perfil"
+            element={
+              sessionUser ? (
+                <Profile
+                  currentUser={sessionUser}
+                  onLogout={onLogout}
+                  onProfileUpdate={onProfileUpdate}
+                />
+              ) : (
+                <Navigate to="/" replace />
+              )
+            }
+          />
+          <Route
+            path="/perfil/:userId"
+            element={
+              sessionUser ? (
+                <Profile
+                  currentUser={sessionUser}
+                  onLogout={onLogout}
+                  onProfileUpdate={onProfileUpdate}
+                />
+              ) : (
+                <Navigate to="/" replace />
+              )
+            }
+          />
+          <Route
+            path="/pantalla"
+            element={sessionUser ? <LiveScreen /> : <Navigate to="/" replace />}
+          />
+        </Routes>
+      </Suspense>
+      {!isScreenRoute && <Footer />}
+    </>
+  );
 }
 
 function App() {
@@ -84,54 +147,12 @@ function App() {
 
   return (
     <HashRouter>
-      <Header />
-      <Suspense fallback={<div />}>
-        <Routes>
-          <Route
-            path="/"
-            element={sessionUser ? <Navigate to="/feed" replace /> : <Login onLogin={handleLogin} />}
-          />
-          <Route
-            path="/feed"
-            element={
-              sessionUser ? (
-                <Feed currentUser={sessionUser} onLogout={handleLogout} />
-              ) : (
-                <Navigate to="/" replace />
-              )
-            }
-          />
-          <Route
-            path="/perfil"
-            element={
-              sessionUser ? (
-                <Profile
-                  currentUser={sessionUser}
-                  onLogout={handleLogout}
-                  onProfileUpdate={handleProfileUpdate}
-                />
-              ) : (
-                <Navigate to="/" replace />
-              )
-            }
-          />
-          <Route
-            path="/perfil/:userId"
-            element={
-              sessionUser ? (
-                <Profile
-                  currentUser={sessionUser}
-                  onLogout={handleLogout}
-                  onProfileUpdate={handleProfileUpdate}
-                />
-              ) : (
-                <Navigate to="/" replace />
-              )
-            }
-          />
-        </Routes>
-      </Suspense>
-      <Footer />
+      <AppShell
+        sessionUser={sessionUser}
+        onLogin={handleLogin}
+        onLogout={handleLogout}
+        onProfileUpdate={handleProfileUpdate}
+      />
     </HashRouter>
   );
 }

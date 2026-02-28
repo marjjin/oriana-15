@@ -1,0 +1,7 @@
+const PHOTO_LIMIT = Number.parseInt(import.meta.env.VITE_LIVE_SCREEN_LIMIT || "30", 10) || 30;
+const SLIDE_INTERVAL_MS = Number.parseInt(import.meta.env.VITE_LIVE_SCREEN_SLIDE_MS || "6000", 10) || 6000;
+const QR_INTRO_SECONDS = 20;
+const REFRESH_INTERVAL_MS = 15000;
+const STORAGE_BUCKET = import.meta.env.VITE_SUPABASE_STORAGE_BUCKET || "feed-images";
+
+export { PHOTO_LIMIT, SLIDE_INTERVAL_MS, QR_INTRO_SECONDS, REFRESH_INTERVAL_MS, STORAGE_BUCKET };
