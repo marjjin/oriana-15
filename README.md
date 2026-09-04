@@ -1,10 +1,52 @@
-# React + Vite
+# Oriana 15
 
-## Configurar Supabase
+Aplicación web creada para un cumpleaños de 15, pensada como una pequeña red social para que los invitados pudieran compartir y ver fotos del evento.
 
-1. Crea un proyecto en Supabase.
-2. Copia la URL del proyecto y la clave anon pública.
-3. Completa el archivo `.env`:
+El proyecto fue desarrollado con **React** y **Supabase**, utilizando autenticación de usuarios, base de datos y almacenamiento de imágenes.
+
+## Funcionalidades
+
+- Registro e inicio de sesión de usuarios.
+- Publicación y subida de fotos.
+- Likes en las publicaciones.
+- Comentarios.
+- Visualización de publicaciones y contenido del evento.
+- Diseño responsive, adaptado a celulares y computadoras.
+- Persistencia de datos mediante Supabase.
+- Almacenamiento de imágenes mediante Supabase Storage.
+
+## Tecnologías utilizadas
+
+- **React 19**
+- **Vite**
+- **JavaScript**
+- **React Router**
+- **Supabase**
+  - Authentication
+  - PostgreSQL Database
+  - Storage
+- **CSS / HTML**
+
+## Configuración
+
+Para ejecutar el proyecto localmente es necesario crear un proyecto en Supabase y configurar las variables de entorno.
+
+### 1. Clonar el repositorio
+
+```bash
+git clone https://github.com/marjjin/oriana-15.git
+cd oriana-15
+```
+
+### 2. Instalar dependencias
+
+```bash
+npm install
+```
+
+### 3. Configurar Supabase
+
+Crear un proyecto en Supabase y completar el archivo `.env` con las credenciales correspondientes:
 
 ```env
 VITE_SUPABASE_URL=TU_URL_DE_SUPABASE
@@ -13,25 +55,26 @@ VITE_LIVE_SCREEN_LIMIT=30
 VITE_LIVE_SCREEN_SLIDE_MS=6000
 ```
 
-4. Ejecuta la app:
+El cliente de Supabase se encuentra en `src/lib/supabaseClient.js`.
+
+### 4. Ejecutar el proyecto
 
 ```bash
 npm run dev
 ```
 
-El cliente de Supabase está en `src/lib/supabaseClient.js`.
+La aplicación estará disponible en la dirección local indicada por Vite.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Desarrollo
 
-Currently, two official plugins are available:
+El frontend está construido con React y Vite. La navegación entre las distintas vistas se maneja mediante React Router, mientras que Supabase se utiliza para la autenticación, persistencia de datos y almacenamiento de imágenes.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Estado del proyecto
 
-## React Compiler
+El repositorio contiene el código fuente completo del proyecto. Para ejecutar todas las funcionalidades es necesario contar con una instancia de Supabase configurada, ya que la aplicación depende de sus servicios de autenticación, base de datos y Storage.
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+## Autor
 
-## Expanding the ESLint configuration
+Desarrollado como proyecto personal para un evento de cumpleaños de 15.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+**Repositorio:** https://github.com/marjjin/oriana-15
